@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="tl">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crystal Ball ni Rhi</title>
+  <!-- Nag-load ng Tailwind CSS para sa magandang design -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- I-load ang "Bubble" Font: Sniglet -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sniglet:wght@400;800&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      /* Ginawa nating mas VIBRANT pink background */
+      font-family: 'Sniglet', cursive;
+      background-color: #8a515b;
+      /* Mas matingkad na pink */
+      background-image: linear-gradient(135deg, #8a515b 0%, #b07d86 50%, #b07d86 100%);
+      /* Light Gradient */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .app-card {
+      /* Ginawang mas rounded at mas matingkad ang shadow */
+      background-color: #f5d0d0;
+      border-radius: 3rem;
+      /* Sobrang bilog */
+      border: 5px solid #85355d;
+      /* Deep pink border */
+    }
+
+    .bubble-shadow {
+      box-shadow: 0 15px 30px rgba(255, 100, 200, 0.6), inset 0 5px 10px rgba(255, 255, 255, 0.7);
+      transition: all 0.2s ease-in-out;
+    }
+
+    .bubble-shadow:active {
+      box-shadow: 0 5px 15px rgba(255, 100, 200, 0.4), inset 0 2px 5px rgba(0, 0, 0, 0.2);
+      transform: translateY(3px);
+    }
+
+    .neon-button {
+      /* Gradient Button with Neon Glow */
+      background-image: linear-gradient(45deg, #ebb5e0, #c79fa8);
+      /* Pink to Deep Pink Gradient */
+      border: 3px solid #c79fa8;
+      /* Gold border */
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 0 15px #FF69B4, 0 0 5px #FFFFFF inset;
+      /* Pink Glow */
+    }
+
+    .neon-button:hover {
+      box-shadow: 0 0 25px #FF1493, 0 0 10px #FFFFFF inset;
+    }
+
+    /* I-hide muna ang sagot para sa animation */
+    #answerDisplay {
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    }
+
+    /* Kapag may sagot na, ipakita ito */
+    .show-answer {
+      opacity: 1 !important;
+      transform: scale(1) !important;
+    }
+
+    .crystal-ball {
+      /* Basic styling para maging parang crystal ball ang display */
+      background-color: #eb96d1;
+      /* Deep Purple inner glow */
+      border: 8px solid #E6E6FA;
+      /* Light Purple/Lavender border */
+      border-radius: 50%;
+      width: 200px;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #E6E6FA;
+      /* White text on purple */
+      font-size: 1.25rem;
+      text-align: center;
+      margin: 0 auto 20px;
+      padding: 15px;
+      box-shadow:
+        inset 0 0 20px #FFFFFF,
+        /* White inner glow */
+        0 0 50px rgba(255, 100, 200, 1);
+      /* Intense Pink Outer Glow */
+    }
+
+    .history-item {
+      border-left: 5px solid #FF69B4;
+      /* Hot Pink history marker */
+    }
+  </style>
+</head>
+
+<body class="p-4">
+
+  <div id="app" class="app-card p-8 w-full max-w-md text-center bubble-shadow">
+    <!-- HEADER -->
+    <h2 class="text-3xl font-extrabold text-pink-600 mb-6">
+      Crystal Ball ni Rhi ⋆˚࿔
+    </h2>
+    <p class="mb-6 text-gray-700">
+      Ready kana ba ag pa-uto??? ᶠᶸᶜᵏᵧₒᵤ!
+    </p>
+
+    <!-- USER INPUT -->
+    <input type="text" id="questionInput" placeholder="basta mag tanong ka" class="w-full p-3 mb-6 border-4 border-pink-300 rounded-xl focus:outline-none focus:border-purple-500 text-gray-700" maxlength="100">
+
+    <!-- ASK BUTTON -->
+    <button onclick="getDecision()" id="askButton" class="neon-button w-full py-3 text-xl font-bold rounded-xl shadow-lg hover:text-white bubble-shadow">
+      ask me bitch𝜗ৎ
+    </button>
+
+    <!-- ANSWER DISPLAY -->
+    <div class="mt-8">
+      <p class="text-lg font-bold text-gray-700 mb-4"> mauuto ka ba?</p>
+      <div id="crystalBall" class="crystal-ball">
+        <!-- Dito lalabas ang sagot -->
+        <span id="answerDisplay" class="text-xl font-bold"></span>
+      </div>
+    </div>
+
+    <!-- HISTORY LOG -->
+    <div class="mt-8 pt-4 border-t-2 border-pink-300">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-2xl font-bold text-pink-700">
+          be kind guys
+        </h3>
+        <!-- NEW: CLEAR HISTORY BUTTON -->
+        <button onclick="clearHistory()" class="text-sm text-red-500 hover:text-pink-700 font-semibold py-1 px-3 border border-black-300 rounded-lg transition duration-150 ease-in-out">
+          ₍^. .^₎⟆ 🗑 .ᐣ.ᐟ
+        </button>
+      </div>
+
+      <div id="historyLogDisplay" class="text-left max-h-60 overflow-y-auto">
+        <!-- Dito ilalagay ng JavaScript ang listahan ng Q&A -->
+        <p class="text-gray-500 text-sm italic">hahahahahahaha tama na guys</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 
+    ********************************************************
+    JAVASCRIPT LOGIC (Ang Utak ng App)
+    ********************************************************
+    -->
+  <script>
+    // --- App Setup Variables ---
+    const questionInput = document.getElementById('questionInput');
+    const answerDisplay = document.getElementById('answerDisplay');
+    const askButton = document.getElementById('askButton');
+    const historyLogDisplay = document.getElementById('historyLogDisplay'); // New element for history
+    // ARRAY for History and Answers
+    let historyLog = []; // New array to store Q&A pairs
+    const possibleAnswers = [{
+        text: "YES!",
+        color: "text-pink-700"
+      }, //  Pink
+      {
+        text: "IPIRMI ANG POO DAI",
+        color: "text-pink-700"
+      }, //  Pink 
+      {
+        text: "HA? ANO? HEHE",
+        color: "text-pink-700"
+      }, //  Pink 
+      {
+        text: "S4NAUL B4LIW",
+        color: "text-pink-700"
+      }, //  Pink  
+      {
+        text: "AISH SHIBAL",
+        color: "text-pink-700"
+      }, //  Pink 
+      {
+        text: "SANAOL BUANG",
+        color: "text-pink-700"
+      }, //  Pink 
+      {
+        text: "AHH DADDY",
+        color: "text-pink-700"
+      }, //  Pink 
+      {
+        text: "NO!",
+        color: "text-red-700"
+      }, //  Red 
+      {
+        text: "Siguro??",
+        color: "text-pink-700"
+      }, //  pink
+      {
+        text: "Hindi po ate haha",
+        color: "text-red-700"
+      },
+      {
+        text: "Definitely Not.",
+        color: "text-red-700"
+      },
+      {
+        text: "Ask ulit bukas.",
+        color: "text-pink-700"
+      }, // pink
+      {
+        text: "Kailangan mong mag-move on.",
+        color: "text-purple-700"
+      } //  Purple
+    ];
+    // --- NEW FUNCTION: Clear History ---
+    function clearHistory() {
+      historyLog = []; // I-reset ang array
+      updateHistoryDisplay(); // I-update ang display
+    }
+    // --- NEW FUNCTION: Update History Display ---
+    function updateHistoryDisplay() {
+      // Logic: Gamitin ang map() at join() para gumawa ng HTML list mula sa historyLog
+      if (historyLog.length === 0) {
+        historyLogDisplay.innerHTML = '<p class="text-gray-500 text-sm italic"> goodluck </p>';
+        return;
+      }
+      const historyHTML = historyLog.map(item => `
+                <div class="history-item bg-purple-50 p-3 mb-2 rounded-lg shadow-sm">
+                    <p class="font-semibold text-gray-800">Q: ${item.question}</p>
+                    <p class="text-lg ${item.answer.color}">A: ${item.answer.text}</p>
+                </div>
+            `).join(''); // I-convert ang array ng HTML strings sa isang string
+      historyLogDisplay.innerHTML = historyHTML;
+    }
+    // --- CORE DECISION FUNCTION ---
+    function getDecision() {
+      const question = questionInput.value.trim();
+      // Logic 1: Check kung may tanong
+      if (question === "") {
+        // Do not use alert(), use placeholder instead
+        questionInput.placeholder = "Kailangan mo ng tanong, sis! 😩";
+        questionInput.classList.add('border-red-500');
+        return; // Huwag tumuloy
+      }
+      questionInput.classList.remove('border-red-500');
+      // I-disable ang button habang naglo-load
+      askButton.disabled = true;
+      askButton.textContent = "thinking out loud...";
+      // Itago muna ang lumang sagot
+      answerDisplay.classList.remove('show-answer');
+      // Logic 2: Piliin ang random na sagot
+      setTimeout(() => {
+        const randomIndex = Math.floor(Math.random() * possibleAnswers.length);
+        const result = possibleAnswers[randomIndex];
+        // Logic 3: Ipakita ang sagot sa screen
+        answerDisplay.textContent = result.text;
+        answerDisplay.className = `text-2xl font-bold ${result.color}`; // I-apply ang kulay
+        // Logic 4: I-save sa History Log
+        historyLog.unshift({ // Idagdag sa unahan (unshift) para ang pinakabago ang nasa taas
+          question: question,
+          answer: result
+        });
+        // I-update ang History Display
+        updateHistoryDisplay();
+        // Animation: Ipakita ang sagot
+        answerDisplay.classList.add('show-answer');
+        // I-enable ulit ang button
+        askButton.disabled = false;
+        askButton.textContent = "ask me bitch asf"; // Binago ang button text para sa design
+        // Clear ang input field
+        questionInput.value = '';
+      }, 1000); // 1-second delay para magmukhang nag-iisip ang app
+    }
+    // --- EVENT LISTENER (Para gumana ang ENTER key) ---
+    questionInput.addEventListener('keypress', function(event) {
+      if (event.key === 'Enter') {
+        getDecision();
+      }
+    });
+    // Initialize display on load
+    updateHistoryDisplay();
+  </script>
+
+</body>
+
+</html>
